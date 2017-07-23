@@ -14,6 +14,8 @@ Command line arguments:
 /S[ubdirectories] Current directory and all subdirectories
 
 /D[istinct] Treat assemblies from different directories but with the same name as distinct
+
+/R[egex] Optional search pattern. If included, this string is prepended to '.dll' and used for filename matching
 ```
 
 Roadmap:
