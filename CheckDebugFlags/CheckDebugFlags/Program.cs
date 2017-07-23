@@ -26,6 +26,12 @@ namespace CheckDebugFlags
         /// </summary>
         public bool? Distinct { get; set; }
         public bool? D { get; set; }
+
+        /// <summary>
+        /// Optional search pattern. If included, this string is prepended to '.dll' and used for filename matching
+        /// </summary>
+        public string Regex { get; set; }
+        public string R { get; set; }
     }
 
     class Program
@@ -38,9 +44,10 @@ namespace CheckDebugFlags
                 CommandLineParser.ParseArguments(cliArgs, args);
 
                 var path = cliArgs.Path ?? cliArgs.P ?? ".";
-                var srchOpt = cliArgs?.Subdirectories == true || cliArgs?.S == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                var searchOption = cliArgs?.Subdirectories == true || cliArgs?.S == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                var searchPattern = cliArgs.Regex + cliArgs.R + "*.dll";
 
-                var curDirFiles = Directory.EnumerateFiles(path, "*.dll", srchOpt);
+                var curDirFiles = Directory.EnumerateFiles(path, searchPattern, searchOption);
 
                 ICollection<string> assemblies;
 
@@ -85,6 +92,7 @@ namespace CheckDebugFlags
                 Console.WriteLine("/P[ath]=<relative or absolute path> Optionally specify the directory to begin scanning");
                 Console.WriteLine("/S[ubdirectories] Current directory and all subdirectories");
                 Console.WriteLine("/D[istinct] Treat assemblies from different directories but with the same name as distinct");
+                Console.WriteLine("/R[egex] Optional search pattern. If included, this string is prepended to '.dll' and used for filename matching");
 
                 return 1;
             }
