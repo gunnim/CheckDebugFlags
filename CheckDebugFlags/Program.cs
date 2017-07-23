@@ -46,43 +46,55 @@ namespace CheckDebugFlags
                 var path = cliArgs.Path ?? cliArgs.P ?? ".";
                 var searchOption = cliArgs?.Subdirectories == true || cliArgs?.S == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
                 var searchPattern = cliArgs.Regex + cliArgs.R + "*.dll";
+                var threatAllDistinct = cliArgs?.Distinct == true || cliArgs?.D == true;
 
                 var curDirFiles = Directory.EnumerateFiles(path, searchPattern, searchOption);
 
-                ICollection<string> assemblies;
 
-                if (cliArgs?.Distinct == true
-                || cliArgs?.D == true)
-                {
-                    assemblies = new List<string>();
-                }
-                else
-                {
-                    assemblies = new HashSet<string>();
-                }
+                var assemblyList = new List<string>();
+                var assemblyDic = new Dictionary<string, string>();
 
                 foreach (var file in curDirFiles)
                 {
-                    string assemblyFullName = Path.GetFullPath(file);
+                    string assemblyFullPath = Path.GetFullPath(file);
 
                     try
                     {
-                        Assembly assembly = Assembly.LoadFile(assemblyFullName);
+                        Assembly assembly = Assembly.LoadFile(assemblyFullPath);
                         var assemblyInformation = new AssemblyFlags(assembly);
 
                         if (assemblyInformation.JitTrackingEnabled
                         && !assemblyInformation.JitOptimized
                         && assemblyInformation.EditAndContinueEnabled)
                         {
-                            assemblies.Add(assemblyFullName + " - Debug");
+                            if (threatAllDistinct)
+                            {
+                                assemblyList.Add(assemblyFullPath);
+                            }
+                            else
+                            {
+                                var assemblyName = Path.GetFileNameWithoutExtension(assemblyFullPath);
+
+                                assemblyDic[assemblyName] = assemblyFullPath;
+                            }
                         }
                     }
                     catch { }
                 }
 
-                foreach (var assembly in assemblies)
+                if (threatAllDistinct)
                 {
-                    Console.WriteLine(assembly);
+                    foreach (var assembly in assemblyList)
+                    {
+                        Console.WriteLine(assembly);
+                    }
+                }
+                else
+                {
+                    foreach (var assembly in assemblyDic)
+                    {
+                        Console.WriteLine(assembly.Value);
+                    }
                 }
 
                 return 0;
