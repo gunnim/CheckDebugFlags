@@ -45,6 +45,12 @@
     <Compile Include="AssemblyFlags.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestApi\Command.cs" />
+    <Compile Include="TestApi\CommandLineDictionary.cs" />
+    <Compile Include="TestApi\CommandLineParser.cs" />
+    <Compile Include="TestApi\DirectoryInfoConverter.cs" />
+    <Compile Include="TestApi\FileInfoConverter.cs" />
+    <Compile Include="TestApi\RequiredAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

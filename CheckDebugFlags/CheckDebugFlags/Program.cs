@@ -1,31 +1,58 @@
 ﻿using System;
 using System.Reflection;
 using System.IO;
+using Microsoft.Test.CommandLineParsing;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CheckDebugFlags
 {
+    class CommandLineArguments
+    {
+        /// <summary>
+        /// Optionally specify the directory to begin scanning
+        /// </summary>
+        public string Path { get; set; }
+        public string P { get; set; }
+
+        /// <summary>
+        /// Current directory and all subdirectories
+        /// </summary>
+        public bool? Subdirectories { get; set; }
+        public bool? S { get; set; }
+
+        /// <summary>
+        /// Treat assemblies from different directories but with the same name as distinct
+        /// </summary>
+        public bool? Distinct { get; set; }
+        public bool? D { get; set; }
+    }
+
     class Program
     {
         static int Main(string[] args)
         {
             try
             {
-                string path;
+                var cliArgs = new CommandLineArguments();
+                CommandLineParser.ParseArguments(cliArgs, args);
 
-                if (args.Length > 1)
+                var path = cliArgs.Path ?? cliArgs.P ?? ".";
+                var srchOpt = cliArgs?.Subdirectories == true || cliArgs?.S == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
+                var curDirFiles = Directory.EnumerateFiles(path, "*.dll", srchOpt);
+
+                ICollection<string> assemblies;
+
+                if (cliArgs?.Distinct == true
+                || cliArgs?.D == true)
                 {
-                    throw new ArgumentOutOfRangeException();
-                }
-                if (args.Length == 1)
-                {
-                    path = args[0];
+                    assemblies = new List<string>();
                 }
                 else
                 {
-                    path = ".";
+                    assemblies = new HashSet<string>();
                 }
-
-                var curDirFiles = Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories);
 
                 foreach (var file in curDirFiles)
                 {
@@ -40,21 +67,24 @@ namespace CheckDebugFlags
                         && !assemblyInformation.JitOptimized
                         && assemblyInformation.EditAndContinueEnabled)
                         {
-                            Console.WriteLine(assemblyFullName + " Debug");
+                            assemblies.Add(assemblyFullName + " - Debug");
                         }
                     }
                     catch { }
                 }
 
+                foreach (var assembly in assemblies)
+                {
+                    Console.WriteLine(assembly);
+                }
+
                 return 0;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (ArgumentException)
             {
-                Console.WriteLine(
-                    @"CheckDebugFlags only accepts a single optional parameter. 
-                        The directory to start check from.
-                        When executed without parameters, the current directory is used."
-                );
+                Console.WriteLine("/P[ath]=<relative or absolute path> Optionally specify the directory to begin scanning");
+                Console.WriteLine("/S[ubdirectories] Current directory and all subdirectories");
+                Console.WriteLine("/D[istinct] Treat assemblies from different directories but with the same name as distinct");
 
                 return 1;
             }
