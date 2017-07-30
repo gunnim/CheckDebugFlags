@@ -46,7 +46,7 @@ namespace CheckDebugFlags
                 var path = cliArgs.Path ?? cliArgs.P ?? ".";
                 var searchOption = cliArgs?.Subdirectories == true || cliArgs?.S == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
                 var searchPattern = cliArgs.Regex + cliArgs.R + "*.dll";
-                var threatAllDistinct = cliArgs?.Distinct == true || cliArgs?.D == true;
+                var treatAllDistinct = cliArgs?.Distinct == true || cliArgs?.D == true;
 
                 var curDirFiles = Directory.EnumerateFiles(path, searchPattern, searchOption);
 
@@ -67,7 +67,7 @@ namespace CheckDebugFlags
                         && !assemblyInformation.JitOptimized
                         && assemblyInformation.EditAndContinueEnabled)
                         {
-                            if (threatAllDistinct)
+                            if (treatAllDistinct)
                             {
                                 assemblyList.Add(assemblyFullPath);
                             }
@@ -82,7 +82,7 @@ namespace CheckDebugFlags
                     catch { }
                 }
 
-                if (threatAllDistinct)
+                if (treatAllDistinct)
                 {
                     foreach (var assembly in assemblyList)
                     {
