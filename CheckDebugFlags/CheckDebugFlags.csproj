@@ -35,7 +35,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>IdentityKey.snk.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>IdentityKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
@@ -63,7 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="IdentityKey.pfx.snk" />
+    <None Include="IdentityKey.snk" />
     <None Include="IdentityKey.snk.pfx" />
+    <None Include="pubkey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
