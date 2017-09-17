@@ -19,6 +19,5 @@ Command line arguments:
 ```
 
 Roadmap:
-```
-I'd like to make a dotnet core version when dotnet core 2.0 get's released with support for the flags on DebuggableAttribute
-```
+
+I'd like to make a dotnet core version when dotnet core 2.0 gets released with support for the flags on DebuggableAttribute
