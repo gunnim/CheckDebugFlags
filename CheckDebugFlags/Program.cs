@@ -1,9 +1,8 @@
-﻿using System;
-using System.Reflection;
-using System.IO;
-using Microsoft.Test.CommandLineParsing;
+﻿using Microsoft.Test.CommandLineParsing;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
+using System.Reflection;
 
 namespace CheckDebugFlags
 {
@@ -80,6 +79,11 @@ namespace CheckDebugFlags
                         }
                     }
                     catch { }
+                }
+
+                if (Console.ForegroundColor == ConsoleColor.Gray)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
                 }
 
                 if (treatAllDistinct)
