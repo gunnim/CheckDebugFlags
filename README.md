@@ -21,3 +21,8 @@ Command line arguments:
 Roadmap:
 
 I'd like to make a dotnet core version when dotnet core 2.0 gets released with support for the flags on DebuggableAttribute
+
+Example
+```
+C:\Code>CheckDebugFlags /S /P=. /D /R="DLL Name"
+```
